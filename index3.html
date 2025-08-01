@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Like Bot Premium Plans</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --accent: #fd79a8;
+            --success: #00b894;
+            --text: #2d3436;
+            --bg: #f9f9f9;
+            --card-bg: #ffffff;
+            --header-bg: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            --footer-bg: #2d3436;
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode {
+            --text: #f5f6fa;
+            --bg: #1a1a1a;
+            --card-bg: #2d3436;
+            --header-bg: linear-gradient(135deg, #4834d4, #686de0);
+            --footer-bg: #1a1a1a;
+            --shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin: 60px 0 40px;
+            padding: 30px;
+            background: var(--header-bg);
+            color: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Plans Container */
+        .plans-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        /* Plan Cards */
+        .plan-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            animation: cardEntrance 0.5s ease-out;
+            animation-fill-mode: backwards;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            border-color: var(--accent);
+        }
+
+        .plan-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+        }
+
+        .plan-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .plan-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .plan-discount {
+            display: inline-block;
+            background-color: var(--accent);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .plan-features {
+            padding: 20px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+        }
+
+        .feature i {
+            margin-right: 10px;
+            color: var(--success);
+        }
+
+        /* Section Titles */
+        .section-title {
+            text-align: center;
+            margin: 60px 0 20px;
+            font-size: 1.8rem;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 10px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .section-title:after {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            margin: 10px auto;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: modalEntrance 0.4s ease;
+        }
+
+        @keyframes modalEntrance {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .payment-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        .upi-id {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+            background-color: var(--footer-bg);
+            color: white;
+            border-radius: 15px;
+            animation: fadeIn 1s ease;
+        }
+
+        .contact {
+            margin-top: 15px;
+        }
+
+        .contact a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .contact a:hover {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .plans-container {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                margin-top: 30px;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animation Delays */
+        .plan-card:nth-child(1) { animation-delay: 0.1s; }
+        .plan-card:nth-child(2) { animation-delay: 0.2s; }
+        .plan-card:nth-child(3) { animation-delay: 0.3s; }
+        .plan-card:nth-child(4) { animation-delay: 0.4s; }
+        .plan-card:nth-child(5) { animation-delay: 0.5s; }
+        .plan-card:nth-child(6) { animation-delay: 0.6s; }
+        .plan-card:nth-child(7) { animation-delay: 0.7s; }
+        .plan-card:nth-child(8) { animation-delay: 0.8s; }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="container">
+        <header>
+            <h1>Like Bot Premium Plans</h1>
+            <p class="subtitle">Boost your social media presence with our exclusive packages</p>
+        </header>
+        
+        <!-- Auto-Boost Plans (Top Section) -->
+        <h2 class="section-title">Auto-Boost Plans</h2>
+        <p style="text-align: center; margin-bottom: 20px;">📅 Validity: END of Month | ✨ No Verification Needed</p>
+        
+        <div class="plans-container">
+            <!-- Auto Boost -->
+            <div class="plan-card" onclick="showQRCode('Auto Boost', '1', 'Auto-Like at 6 AM')">
+                <div class="plan-header">
+                    <div class="plan-name">Auto Boost</div>
+                    <div class="plan-price">$1</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Command Required</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Auto-Like] At 6 AM</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Notification In Your DM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Premium Packages (Middle Section) -->
+        <h2 class="section-title">Premium Packages</h2>
+        <p style="text-align: center; margin-bottom: 20px;">📅 Validity: END of Month | ✨ No Verification Needed</p>
+        
+        <div class="plans-container">
+            <!-- Power Package -->
+            <div class="plan-card" onclick="showQRCode('Power Package', '0.5', '[Likes+Visits]*1 + [Friend Request]*100')">
+                <div class="plan-header">
+                    <div class="plan-name">Power Package</div>
+                    <div class="plan-price">$0.5</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Likes+Visits] × 1</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Friend Request] × 100</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>VIP Support Group</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Super Package -->
+            <div class="plan-card" onclick="showQRCode('Super Package', '0.8', '[Likes]*1 + [Visits]*18 + [Friend Requests]*1000')">
+                <div class="plan-header">
+                    <div class="plan-name">Super Package</div>
+                    <div class="plan-price">$0.8</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Likes] × 1</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Visits] × 18</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Friend Requests] × 1000</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>VIP Support Group</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIP Membership Plans (Bottom Section) -->
+        <h2 class="section-title">VIP Membership Plans</h2>
+        <p style="text-align: center; margin-bottom: 20px;">📅 Validity: END of Month | ✨ No Verification Needed</p>
+        
+        <div class="plans-container">
+            <!-- Bronze Plan -->
+            <div class="plan-card" onclick="showQRCode('Bronze Plan', '1', '2 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Bronze</div>
+                    <div class="plan-price">$1</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>2 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Silver Plan -->
+            <div class="plan-card" onclick="showQRCode('Silver Plan', '1.4', '3 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Silver</div>
+                    <div class="plan-price">$1.4</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>3 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gold Plan -->
+            <div class="plan-card" onclick="showQRCode('Gold Plan', '2.3', '5 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Gold</div>
+                    <div class="plan-price">$2.3</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>5 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Platinum Plan -->
+            <div class="plan-card" onclick="showQRCode('Platinum Plan', '3', '7 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Platinum</div>
+                    <div class="plan-price">$3</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>7 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Diamond Plan -->
+            <div class="plan-card" onclick="showQRCode('Diamond Plan', '4', '10 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Diamond</div>
+                    <div class="plan-price">$4</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>10 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Heroic Plan -->
+            <div class="plan-card" onclick="showQRCode('Heroic Plan', '5.5', '15 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Heroic</div>
+                    <div class="plan-price">$5.5</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>15 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Master Plan -->
+            <div class="plan-card" onclick="showQRCode('Master Plan', '7', '20 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Master</div>
+                    <div class="plan-price">$7</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>20 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grandmaster Plan -->
+            <div class="plan-card" onclick="showQRCode('Grandmaster Plan', '10', '30 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Grandmaster</div>
+                    <div class="plan-price">$10</div>
+                    <div class="plan-discount">30% OFF</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>30 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <h3>Payment Instructions</h3>
+            <p>Scan the QR code or use the UPI ID below to make payment</p>
+            <div class="upi-id">satyam84ya@fam</div>
+            <div class="contact">
+                Contact: <a href="https://t.me/BharatKohli18" target="_blank">@BharatKohli18</a>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- QR Code Modal -->
+    <div class="modal" id="qrModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modalPlanName">Plan Name</h2>
+            <p id="modalPlanPrice">Price: $0</p>
+            <p id="modalPlanFeatures">Features: </p>
+            
+            <div class="qr-code">
+                <img id="qrCodeImage" src="" alt="Scan to Pay">
+            </div>
+            
+            <div class="payment-details">
+                <p>Send exact amount to:</p>
+                <div class="upi-id">satyam84ya@fam</div>
+                <p>After payment, share screenshot with <a href="https://t.me/BharatKohli18" target="_blank">@BharatKohli18</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+        
+        // QR Code Generation
+        function showQRCode(planName, price, features) {
+            document.getElementById('modalPlanName').textContent = planName;
+            document.getElementById('modalPlanPrice').textContent = `Price: $${price}`;
+            document.getElementById('modalPlanFeatures').textContent = `Features: ${features}`;
+            
+            // Generate QR code URL (replace with your actual QR images)
+            const qrImages = {
+                '0.5': 'https://via.placeholder.com/200?text=QR+$0.5',
+                '0.8': 'https://via.placeholder.com/200?text=QR+$0.8',
+                '1': 'https://via.placeholder.com/200?text=QR+$1',
+                '1.4': 'https://via.placeholder.com/200?text=QR+$1.4',
+                '2.3': 'https://via.placeholder.com/200?text=QR+$2.3',
+                '3': 'https://via.placeholder.com/200?text=QR+$3',
+                '4': 'https://via.placeholder.com/200?text=QR+$4',
+                '5.5': 'https://via.placeholder.com/200?text=QR+$5.5',
+                '7': 'https://via.placeholder.com/200?text=QR+$7',
+                '10': 'https://via.placeholder.com/200?text=QR+$10'
+            };
+            
+            document.getElementById('qrCodeImage').src = qrImages[price];
+            document.getElementById('qrModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('qrModal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
