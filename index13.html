@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Like Bot VIP Membership</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Color Theme */
+        :root {
+            --neon-blue: #00a8ff;
+            --neon-purple: #9c27b0;
+            --neon-red: #ff3e41;
+            --neon-green: #00ff9d;
+            --dark-bg: #0a0e23;
+            --darker-bg: #050716;
+            --card-bg: rgba(10, 14, 35, 0.8);
+            --text: #ffffff;
+        }
+
+        /* Base Styles */
+        body {
+            background: var(--dark-bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2300a8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>'), auto;
+        }
+
+        button, .plan-card {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%2300a8ff" stroke="%2300a8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'), pointer;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Particle Background */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Floating Neon Elements */
+        .floating-neon {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .neon-circle {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,168,255,0.15) 0%, transparent 70%);
+            filter: blur(30px);
+            animation: float 15s infinite ease-in-out;
+            top: 20%;
+            left: 10%;
+        }
+
+        .neon-triangle {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            background: radial-gradient(circle, rgba(156,39,176,0.1) 0%, transparent 70%);
+            filter: blur(40px);
+            animation: floatReverse 18s infinite ease-in-out;
+            bottom: 15%;
+            right: 10%;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(5, 7, 22, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+            will-change: transform;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00a8ff, #9c27b0, #ff3e41, #00ff9d);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--neon-green);
+        }
+
+        /* Trending Notice */
+        .trending-notice {
+            background: linear-gradient(90deg, var(--neon-red), #ff6b6b);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 0 15px var(--neon-red);
+            animation: pulse 2s infinite;
+        }
+
+        /* Purchase Counter */
+        .purchase-counter {
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px dashed var(--neon-green);
+            font-weight: bold;
+            backdrop-filter: blur(8px);
+        }
+
+        .purchase-counter i {
+            color: var(--neon-green);
+            margin-right: 8px;
+        }
+
+        /* Plans Container */
+        .plans-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+            transition: transform 0.3s;
+            will-change: transform;
+        }
+
+        /* Plan Cards */
+        .plan-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .plan-card.featured {
+            animation: pulseGlow 2s infinite alternate;
+            border-color: var(--neon-glow) !important;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px) rotateX(2deg) rotateY(2deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3), 0 0 30px rgba(0,168,255,0.2);
+        }
+
+        .plan-header {
+            padding: 20px;
+            background: linear-gradient(45deg, #00a8ff, #9c27b0, #ff3e41, #00ff9d);
+            background-size: 300% 300%;
+            animation: gradientShift 8s ease infinite;
+            color: white;
+            text-align: center;
+        }
+
+        .plan-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .plan-card:hover .plan-name {
+            text-shadow: 0 0 15px currentColor;
+            transform: scale(1.05);
+        }
+
+        .plan-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .inr-price {
+            display: inline-block;
+            background: #000;
+            color: var(--neon-green);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            border: 1px solid var(--neon-green);
+        }
+
+        .validity {
+            display: inline-block;
+            background: var(--neon-purple);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .plan-features {
+            padding: 20px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+
+        .feature i {
+            margin-right: 10px;
+            color: var(--neon-green);
+            transition: all 0.3s;
+        }
+
+        .plan-card:hover .feature i {
+            transform: rotate(15deg) scale(1.2);
+            color: var(--neon-blue);
+        }
+
+        .feature span {
+            position: relative;
+        }
+
+        .feature span::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
+            transition: width 0.3s;
+        }
+
+        .feature:hover span::after {
+            width: 100%;
+        }
+
+        /* Preview Button */
+        .preview-btn {
+            display: block;
+            background: var(--neon-blue);
+            color: white;
+            text-align: center;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            width: 100%;
+        }
+
+        .preview-btn:hover {
+            background: var(--neon-purple);
+            transform: translateY(-2px);
+        }
+
+        /* Bottom Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s;
+            z-index: -1;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--darker-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 30px var(--neon-blue);
+            backdrop-filter: blur(10px);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--neon-red);
+            transition: transform 0.3s;
+        }
+
+        .close-modal:hover {
+            transform: rotate(90deg);
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0,168,255,0.5);
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-preview {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background-color: black;
+            border-radius: 10px;
+            border: 2px solid var(--neon-blue);
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,168,255,0.5);
+        }
+
+        .video-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .payment-details {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 5px;
+            border: 1px dashed var(--neon-green);
+        }
+
+        .upi-id {
+            font-weight: bold;
+            color: var(--neon-blue);
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background: rgba(5, 7, 22, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border: 1px solid var(--neon-purple);
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .testimonials h2 {
+            color: var(--neon-green);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .testimonial-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--neon-blue);
+            transition: transform 0.3s;
+            backdrop-filter: blur(8px);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 168, 255, 0.2);
+        }
+
+        .testimonial-content i {
+            color: var(--neon-purple);
+            font-size: 1.5rem;
+        }
+
+        .testimonial-content p {
+            font-style: italic;
+            margin: 10px 0;
+        }
+
+        .user {
+            color: var(--neon-green);
+            font-weight: bold;
+        }
+
+        /* FAQ Section */
+        .faq {
+            background: rgba(5, 7, 22, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border: 1px solid var(--neon-blue);
+            backdrop-filter: blur(8px);
+        }
+
+        .faq h2 {
+            color: var(--neon-green);
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .faq-item {
+            margin-bottom: 10px;
+        }
+
+        .faq-question {
+            width: 100%;
+            text-align: left;
+            background: var(--card-bg);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            background: rgba(0, 168, 255, 0.2);
+        }
+
+        .faq-answer {
+            padding: 15px;
+            background: var(--darker-bg);
+            border-radius: 0 0 5px 5px;
+            display: none;
+        }
+
+        .faq-answer p {
+            margin: 0;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(5, 7, 22, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border: 1px solid var(--neon-green);
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .progress-container h2 {
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: var(--darker-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--neon-purple);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+            width: 78%;
+            border-radius: 10px;
+            transition: width 1s;
+            position: relative;
+            animation: pulseProgress 2s infinite;
+        }
+
+        /* Countdown Timer */
+        .countdown-container {
+            background: rgba(5, 7, 22, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border: 1px solid var(--neon-red);
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .countdown-container h2 {
+            color: var(--neon-red);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--neon-red);
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .countdown-item {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 80px;
+            border: 1px solid var(--neon-blue);
+        }
+
+        .countdown-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--neon-green);
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+            background: rgba(5, 7, 22, 0.8);
+            color: white;
+            border-radius: 15px;
+            border: 1px solid var(--neon-purple);
+            backdrop-filter: blur(8px);
+        }
+
+        .contact a {
+            color: var(--neon-blue);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .contact a:hover {
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        /* Chat Bubble */
+        .chat-bubble {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--neon-purple);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--neon-purple);
+            animation: pulse 2s infinite;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .chat-bubble:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        /* Chat Container */
+        .chat-container {
+            position: fixed;
+            bottom: 80px;
+            right: 30px;
+            width: 300px;
+            background: var(--darker-bg);
+            border: 1px solid var(--neon-blue);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,168,255,0.3);
+            display: none;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+        }
+
+        .chat-header {
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+            color: white;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .close-chat:hover {
+            transform: rotate(90deg);
+        }
+
+        .chat-messages {
+            height: 250px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 18px;
+            max-width: 80%;
+            animation: fadeIn 0.3s;
+        }
+
+        .bot-message {
+            background: rgba(0,168,255,0.1);
+            border: 1px solid var(--neon-blue);
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background: rgba(156,39,176,0.1);
+            border: 1px solid var(--neon-purple);
+            margin-left: auto;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .chat-input input {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--neon-purple);
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: white;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .chat-input input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .chat-input button {
+            background: var(--neon-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chat-input button:hover {
+            background: var(--neon-purple);
+            transform: rotate(15deg);
+        }
+
+        /* Social Proof Popups */
+        .social-popup {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--neon-green);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.5s;
+            z-index: 999;
+            max-width: 280px;
+            backdrop-filter: blur(8px);
+        }
+
+        .purchase-notification {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .purchase-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .purchase-details small {
+            color: var(--neon-green);
+            font-size: 0.8em;
+            display: block;
+            margin-top: 3px;
+        }
+
+        /* Wave Divider */
+        .wave-divider {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            z-index: -1;
+        }
+
+        .wave-divider svg {
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 150px;
+            animation: wave 10s linear infinite;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseProgress {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-50px) rotate(5deg); }
+        }
+
+        @keyframes floatReverse {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(50px) rotate(-5deg); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(20px); }
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes pulseGlow {
+            from { box-shadow: var(--neon-glow); }
+            to { box-shadow: 0 0 30px var(--neon-glow); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .plans-container {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .countdown {
+                flex-wrap: wrap;
+            }
+            .chat-container {
+                width: 90%;
+                right: 5%;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Reduced motion preference */
+        @media (prefers-reduced-motion) {
+            .plan-card, .feature i, .action-btn, .chat-bubble,
+            .floating-neon, .wave-divider, .progress-fill {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Floating Neon Elements -->
+    <div class="floating-neon">
+        <div class="neon-circle"></div>
+        <div class="neon-triangle"></div>
+    </div>
+
+    <!-- Wave Divider -->
+    <div class="wave-divider">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" 
+                  opacity=".25" fill="url(#waveGradient)"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" 
+                  opacity=".5" fill="url(#waveGradient)"></path>
+            <defs>
+                <linearGradient id="waveGradient" x1="0%" y1="50%" x2="100%" y2="50%">
+                    <stop offset="0%" stop-color="var(--neon-blue)" />
+                    <stop offset="100%" stop-color="var(--neon-purple)" />
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Like Bot VIP Membership</h1>
+            <p class="subtitle">Choose Any Of The Plans To Get likes Without Any Verification</p>
+        </header>
+        
+        <!-- Trending Notice -->
+        <div class="trending-notice">
+            💥 TRENDING #1 - AUTO LIKE 💥
+        </div>
+
+        <!-- Purchase Counter -->
+        <div class="purchase-counter">
+            <i class="fas fa-bolt"></i> 
+            <span id="purchaseCount">1248</span> plans activated today!
+        </div>
+
+        <div class="plans-container">
+            <!-- Auto Boost -->
+            <div class="plan-card" onclick="showQRCode('Auto Boost', '1', 'Auto-Like at 6 AM')">
+                <div class="plan-header">
+                    <div class="plan-name">Auto Boost</div>
+                    <div class="plan-price">$1 <span class="inr-price">₹80</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Command Required</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Auto-Like] At 6 AM</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Notification In Your DM</span>
+                    </div>
+                    <button class="preview-btn" onclick="event.stopPropagation(); showVideoPreview()">Check Preview Of Autolike</button>
+                </div>
+            </div>
+            
+            <!-- Power Package -->
+            <div class="plan-card" onclick="showQRCode('Power Package', '0.5', '[Likes+Visits]*1 + [Friend Request]*100')">
+                <div class="plan-header">
+                    <div class="plan-name">Power Package</div>
+                    <div class="plan-price">$0.5 <span class="inr-price">₹40</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Likes+Visits] × 1</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Friend Request] × 100</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>VIP Support Group</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Super Package -->
+            <div class="plan-card" onclick="showQRCode('Super Package', '0.8', '[Likes]*1 + [Visits]*18 + [Friend Requests]*1000')">
+                <div class="plan-header">
+                    <div class="plan-name">Super Package</div>
+                    <div class="plan-price">$0.8 <span class="inr-price">₹64</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Likes] × 1</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Visits] × 18</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[Friend Requests] × 1000</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>VIP Support Group</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bronze Plan -->
+            <div class="plan-card" onclick="showQRCode('Bronze Plan', '1', '2 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Bronze</div>
+                    <div class="plan-price">$1 <span class="inr-price">₹80</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>2 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Silver Plan -->
+            <div class="plan-card" onclick="showQRCode('Silver Plan', '1.4', '3 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Silver</div>
+                    <div class="plan-price">$1.4 <span class="inr-price">₹112</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>3 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gold Plan -->
+            <div class="plan-card" onclick="showQRCode('Gold Plan', '2.3', '5 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Gold</div>
+                    <div class="plan-price">$2.3 <span class="inr-price">₹184</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>5 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Platinum Plan -->
+            <div class="plan-card" onclick="showQRCode('Platinum Plan', '3', '7 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Platinum</div>
+                    <div class="plan-price">$3 <span class="inr-price">₹240</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>7 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Diamond Plan -->
+            <div class="plan-card" onclick="showQRCode('Diamond Plan', '4', '10 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Diamond</div>
+                    <div class="plan-price">$4 <span class="inr-price">₹320</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>10 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Heroic Plan -->
+            <div class="plan-card" onclick="showQRCode('Heroic Plan', '5.5', '15 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Heroic</div>
+                    <div class="plan-price">$5.5 <span class="inr-price">₹440</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>15 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Master Plan -->
+            <div class="plan-card" onclick="showQRCode('Master Plan', '7', '20 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Master</div>
+                    <div class="plan-price">$7 <span class="inr-price">₹560</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>20 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grandmaster Plan -->
+            <div class="plan-card" onclick="showQRCode('Grandmaster Plan', '10', '30 Requests Daily')">
+                <div class="plan-header">
+                    <div class="plan-name">Grandmaster</div>
+                    <div class="plan-price">$10 <span class="inr-price">₹800</span></div>
+                    <div class="validity">Validity: 1 September</div>
+                </div>
+                <div class="plan-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Verification Needed</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Likes In Multiple UID</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Separate VIP Group</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>30 Requests Daily</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials">
+            <h2>What Our Members Say</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <i class="fas fa-quote-left"></i>
+                        <p>"The Auto Boost plan is amazing! I wake up to 100+ likes every morning without doing anything."</p>
+                        <div class="user">
+                            <strong>- Sahil, Auto Like User</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <i class="fas fa-quote-left"></i>
+                        <p>"Best investment for growing my Free Fire profile. The Bronze Plan gave me instant results!"</p>
+                        <div class="user">
+                            <strong>- Vijay, Bronze Member</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <button class="faq-question">How do I get my likes after payment? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer">
+                    <p>After payment, send the screenshot to <a href="https://t.me/BharatKohli18" target="_blank">@BharatKohli18</a>. You'll be added to the VIP group where likes are automated.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Is my account safe? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer">
+                    <p>Yeah 100%! Garena Allows You To Claim 100 Likes Daily!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <h2>This Week's Members</h2>
+            <div class="progress-text">
+                <span>78% of spots filled</span>
+                <span>156/200 members</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <p style="margin-top: 10px;">Hurry! Only 44 spots left this week</p>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div class="countdown-container">
+            <h2>Offer Ends In:</h2>
+            <div class="countdown" id="countdown">
+                <div class="countdown-item">
+                    <div class="countdown-number" id="days">00</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="hours">00</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="minutes">00</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="seconds">00</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+            <p style="margin-top: 20px; font-weight: bold;">All plans valid till 1 September! Prices increase soon!</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="https://t.me/FreeFireVIPLikes2" class="action-btn" target="_blank">Free Likes Group</a>
+            <a href="https://t.me/BharatKohli18" class="action-btn" target="_blank">Owner Contact</a>
+        </div>
+        
+        <footer>
+            <h3>Payment Instructions</h3>
+            <p>Scan the QR code or use the UPI ID below to make payment</p>
+            <div class="upi-id">satyam84ya@fam</div>
+            <div class="contact">
+                Contact: <a href="https://t.me/BharatKohli18" target="_blank">@BharatKohli18</a>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- QR Code Modal -->
+    <div class="modal" id="qrModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modalPlanName">Plan Name</h2>
+            <p id="modalPlanPrice">Price: $0 (₹0)</p>
+            <p id="modalPlanFeatures">Features: </p>
+            
+            <div class="qr-code">
+                <img id="qrCodeImage" src="" alt="Scan to Pay">
+            </div>
+            
+            <div class="payment-details">
+                <p>Send exact amount to:</p>
+                <div class="upi-id">satyam84ya@fam</div>
+                <p>After payment, share screenshot with <a href="https://t.me/BharatKohli18" target="_blank">@BharatKohli18</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Video Preview Modal -->
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeVideoModal()">&times;</span>
+            <h2>Auto-Like Preview</h2>
+            <p>See how the auto-like feature works</p>
+            
+            <div class="video-preview">
+                <video id="autolikeVideo" controls>
+                    <source src="autolike.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+            <div class="payment-details">
+                <p>Want this feature? Purchase the Auto Boost plan!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chat Support -->
+    <div id="chatContainer" class="chat-container">
+        <div class="chat-header">
+            <h3>VIP Support</h3>
+            <button class="close-chat" onclick="closeChat()">×</button>
+        </div>
+        <div id="chatMessages" class="chat-messages">
+            <div class="message bot-message">
+                <p>Hello! I'm your Like Bot assistant. How may I help you today?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your question..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div class="chat-bubble" onclick="toggleChat()">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <script>
+        // Particle Network Animation
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        for (let i = 0; i < 80; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 3 + 1,
+                speedX: Math.random() * 1 - 0.5,
+                speedY: Math.random() * 1 - 0.5
+            });
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(p => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                
+                if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+                
+                ctx.fillStyle = `hsla(${Math.random() * 60 + 180}, 100%, 50%, 0.8)`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 100) {
+                        ctx.strokeStyle = `hsla(210, 100%, 50%, ${1 - distance/100})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Spotlight Effect
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth * 100;
+            const y = e.clientY / window.innerHeight * 100;
+            document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, 
+                rgba(0,168,255,0.1) 0%, 
+                var(--dark-bg) 70%)`;
+            
+            // Parallax Effect
+            document.querySelector('header').style.transform = 
+                `translate(${x * 0.2}px, ${y * 0.2}px)`;
+            
+            document.querySelector('.plans-container').style.transform = 
+                `translate(${x * -0.1}px, ${y * -0.1}px)`;
+        });
+
+        // QR Code Generation
+        function showQRCode(planName, price, features) {
+            document.getElementById('modalPlanName').textContent = planName;
+            document.getElementById('modalPlanPrice').textContent = `Price: $${price} (₹${price * 80})`;
+            document.getElementById('modalPlanFeatures').textContent = `Features: ${features}`;
+            
+            const qrImages = {
+                '0.5': 'qr_1.png',
+                '0.8': 'qr_1.png',
+                '1': 'qr_1.png',
+                '1.4': 'qr_1.png',
+                '2.3': 'qr_1.png',
+                '3': 'qr_1.png',
+                '4': 'qr_1.png',
+                '5.5': 'qr_1.png',
+                '7': 'qr_1.png',
+                '10': 'qr_1.png'
+            };
+            
+            document.getElementById('qrCodeImage').src = qrImages[price];
+            document.getElementById('qrModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+        
+        // Video Preview Functions
+        function showVideoPreview() {
+            document.getElementById('videoModal').style.display = 'flex';
+            document.getElementById('autolikeVideo').play();
+        }
+        
+        function closeVideoModal() {
+            document.getElementById('videoModal').style.display = 'none';
+            document.getElementById('autolikeVideo').pause();
+        }
+        
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+                
+                const icon = question.querySelector('i');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+            });
+        });
+
+        // Countdown Timer (to September 1, 2025)
+        function updateCountdown() {
+            const endDate = new Date(2025, 8, 1, 23, 59, 59).getTime();
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+            if (distance < 0) {
+                clearInterval(countdownTimer);
+                document.getElementById('countdown').innerHTML = '<div style="color: var(--neon-red); font-weight: bold;">OFFER HAS ENDED!</div>';
+            }
+        }
+
+        // Purchase Counter Animation
+        function updatePurchaseCounter() {
+            const counter = document.getElementById('purchaseCount');
+            const current = parseInt(counter.textContent);
+            counter.textContent = current + Math.floor(Math.random() * 3);
+        }
+
+        // Enhanced AI Chat
+        const aiResponses = {
+            greeting: "Hello! I'm your VIP support assistant. How may I help you today?",
+            pricing: "Our pricing starts at just ₹40 for the Power Package. All plans include our 100% satisfaction guarantee!",
+            safety: "Absolutely! Our service is 100% compliant with Garena's policies. Many top players use our service daily.",
+            payment: "We accept UPI, Google Pay, and PayTM. After payment, simply share the screenshot with @BharatKohli18 on Telegram.",
+            features: "The Auto Boost plan delivers likes automatically at 6 AM daily, while our Diamond plan allows 10 manual requests per day.",
+            default: "I apologize, could you please rephrase your question? For immediate assistance, you may contact @BharatKohli18 on Telegram."
+        };
+
+        function toggleChat() {
+            const chat = document.getElementById('chatContainer');
+            chat.style.display = chat.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function closeChat() {
+            document.getElementById('chatContainer').style.display = 'none';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if(message === '') return;
+            
+            addMessage(message, 'user');
+            
+            setTimeout(() => {
+                let response;
+                if(message.toLowerCase().includes('price') || message.includes('₹') || message.includes('$')) {
+                    response = aiResponses.pricing;
+                } 
+                else if(message.toLowerCase().includes('safe') || message.includes('ban')) {
+                    response = aiResponses.safety;
+                }
+                else if(message.toLowerCase().includes('pay') || message.includes('UPI') || message.includes('money')) {
+                    response = aiResponses.payment;
+                }
+                else if(message.toLowerCase().includes('feature') || message.includes('plan') || message.includes('difference')) {
+                    response = aiResponses.features;
+                }
+                else if(message.toLowerCase().includes('hi') || message.includes('hello') || message.includes('hey')) {
+                    response = aiResponses.greeting;
+                }
+                else {
+                    response = aiResponses.default;
+                }
+                addMessage(response, 'bot');
+            }, 800);
+            
+            input.value = '';
+        }
+
+        function addMessage(text, sender) {
+            const messages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.innerHTML = `<p>${text}</p>`;
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Social Proof Popups
+        const customers = [
+            { name: "Sahil", location: "Mumbai", plan: "Auto Boost", time: "just now" },
+            { name: "Vijay", location: "Delhi", plan: "Diamond", time: "2 minutes ago" },
+            { name: "Priya", location: "Bangalore", plan: "Gold", time: "5 minutes ago" },
+            { name: "Rahul", location: "Hyderabad", plan: "Platinum", time: "10 minutes ago" },
+            { name: "Aarav", location: "Chennai", plan: "Master", time: "15 minutes ago" }
+        ];
+
+        const locations = ["Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Pune"];
+
+        function showSocialProof() {
+            const popup = document.createElement('div');
+            popup.className = 'social-popup';
+            
+            const customer = Math.random() > 0.3 ? 
+                customers[Math.floor(Math.random() * customers.length)] : 
+                {
+                    name: ["Aryan","Riya","Aditya","Ananya","Vivaan"][Math.floor(Math.random()*5)],
+                    location: locations[Math.floor(Math.random()*locations.length)],
+                    plan: ["Bronze","Silver","Gold","Platinum","Diamond"][Math.floor(Math.random()*5)],
+                    time: `${Math.floor(Math.random()*15)+1} minutes ago`
+                };
+            
+            popup.innerHTML = `
+                <div class="purchase-notification">
+                    <div class="purchase-avatar">${customer.name.charAt(0)}</div>
+                    <div class="purchase-details">
+                        <strong>${customer.name}</strong> from ${customer.location}<br>
+                        purchased <strong>${customer.plan} Plan</strong>
+                        <small>${customer.time}</small>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            setTimeout(() => {
+                popup.style.animation = 'fadeOut 0.5s forwards';
+                setTimeout(() => popup.remove(), 500);
+            }, 5000);
+        }
+
+        // Dynamic Plan Highlights
+        function rotateFeaturePlan() {
+            const plans = document.querySelectorAll('.plan-card');
+            plans.forEach(p => p.classList.remove('featured'));
+            
+            const randomPlan = plans[Math.floor(Math.random() * plans.length)];
+            randomPlan.classList.add('featured');
+            randomPlan.style.setProperty('--neon-glow', 
+                `0 0 20px ${Math.random() > 0.5 ? 'var(--neon-blue)' : 'var(--neon-purple)'}`);
+        }
+
+        // Micro-interactions
+        document.querySelectorAll('button, .action-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Initialize everything
+        updateCountdown();
+        const countdownTimer = setInterval(updateCountdown, 1000);
+        setInterval(updatePurchaseCounter, 30000);
+        setTimeout(showSocialProof, 15000);
+        setInterval(showSocialProof, 15000 + Math.random() * 30000);
+        setInterval(rotateFeaturePlan, 10000);
+        
+        // Auto-open chat after 30 seconds
+        setTimeout(() => {
+            if(!localStorage.getItem('chatOpened')) {
+                toggleChat();
+                localStorage.setItem('chatOpened', 'true');
+            }
+        }, 30000);
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('qrModal')) {
+                closeModal();
+            }
+            if (event.target == document.getElementById('videoModal')) {
+                closeVideoModal();
+            }
+        }
+
+        // 3D Card Tilt Effect
+        document.querySelectorAll('.plan-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const x = e.clientX - card.getBoundingClientRect().left;
+                const y = e.clientY - card.getBoundingClientRect().top;
+                
+                card.style.transform = `perspective(1000px) rotateX(${(y - card.offsetHeight/2)/10}deg) rotateY(${-(x - card.offsetWidth/2)/10}deg)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+            });
+        });
+
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
